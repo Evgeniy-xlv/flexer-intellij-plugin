@@ -1,0 +1,30 @@
+plugins {
+    id 'java'
+    id 'org.jetbrains.intellij' version '1.9.0'
+}
+
+group = 'c0rnell.flexer.intellij.plugin'
+version = '1.0.0'
+
+sourceCompatibility = JavaVersion.VERSION_11
+targetCompatibility = JavaVersion.VERSION_11
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation 'junit:junit:4.13.2'
+}
+
+intellij.version = '2022.2'
+intellij.plugins = ['java']
+
+patchPluginXml {
+    version project.version
+    sinceBuild.set("203")
+    untilBuild.set("")
+
+    setPluginDescription(file('docs/pluginDescription.html').text)
+    setChangeNotes(file('docs/pluginChanges.html').text)
+}

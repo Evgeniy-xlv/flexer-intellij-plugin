@@ -1,0 +1,27 @@
+<idea-plugin>
+  <id>Flexer Plugin</id>
+  <name>Flexer</name>
+  <vendor url="https://github.com/c0rnell/flexer">Yevgeniy Tarassov</vendor>
+
+  <description><![CDATA[ It'll be replaced by gradle during plugin building]]></description>
+  <change-notes><![CDATA[ It'll be replaced by gradle during plugin building]]></change-notes>
+
+  <depends>com.intellij.modules.platform</depends>
+  <depends>com.intellij.java</depends>
+
+  <extensions defaultExtensionNs="com.intellij">
+<!--    <localInspection language="JAVA"-->
+<!--      displayName="Lombok builder is missing non-null fields"-->
+<!--      groupPath="Java"-->
+<!--      groupBundle="messages.InspectionsBundle"-->
+<!--      groupKey="group.names.probable.bugs"-->
+<!--      enabledByDefault="true"-->
+<!--      level="ERROR"-->
+<!--      implementationClass="c0rnell.flexer.intellij.plugin.LombokBuilderInspection"/>-->
+
+    <projectService serviceImplementation="c0rnell.flexer.intellij.plugin.provider.LombokProcessorProvider"/>
+    <applicationService serviceImplementation="c0rnell.flexer.intellij.plugin.processor.clazz.GenerateModelClassProcessor"/>
+    <applicationService serviceImplementation="c0rnell.flexer.intellij.plugin.processor.field.GenerateModelFieldProcessor"/>
+    <lang.psiAugmentProvider implementation="c0rnell.flexer.intellij.plugin.provider.FlexerAugmentProvider"/>
+  </extensions>
+</idea-plugin>

@@ -4,14 +4,14 @@ import c0rnell.flexer.intellij.plugin.AnnotationClassNames;
 import c0rnell.flexer.intellij.plugin.LombokBundle;
 import c0rnell.flexer.intellij.plugin.problem.ProblemBuilder;
 import c0rnell.flexer.intellij.plugin.processor.LombokPsiElementUsage;
+import c0rnell.flexer.intellij.plugin.processor.field.AccessorsInfo;
+import c0rnell.flexer.intellij.plugin.processor.field.GenerateModelFieldProcessor;
 import c0rnell.flexer.intellij.plugin.util.LombokProcessorUtil;
 import c0rnell.flexer.intellij.plugin.util.LombokUtils;
 import c0rnell.flexer.intellij.plugin.util.PsiAnnotationSearchUtil;
 import c0rnell.flexer.intellij.plugin.util.PsiAnnotationUtil;
 import c0rnell.flexer.intellij.plugin.util.PsiClassUtil;
 import c0rnell.flexer.intellij.plugin.util.PsiMethodUtil;
-import c0rnell.flexer.intellij.plugin.processor.field.AccessorsInfo;
-import c0rnell.flexer.intellij.plugin.processor.field.GenerateModelFieldProcessor;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.psi.PsiAnnotation;
 import com.intellij.psi.PsiClass;
@@ -27,10 +27,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public class GenerateModelClassProcessor extends AbstractClassProcessor {
+public class GenerateModelClassGeneratorProcessor extends AbstractClassProcessor {
 
-    public GenerateModelClassProcessor() {
-        super(PsiMethod.class, AnnotationClassNames.GENERATE_MODEL);
+    public GenerateModelClassGeneratorProcessor() {
+        super(PsiClass.class, AnnotationClassNames.GENERATE_MODEL);
     }
 
     private GenerateModelFieldProcessor getGetterFieldProcessor() {
@@ -66,7 +66,11 @@ public class GenerateModelClassProcessor extends AbstractClassProcessor {
     protected void generatePsiElements(@NotNull PsiClass psiClass, @NotNull PsiAnnotation psiAnnotation, @NotNull List<? super PsiElement> target) {
         final String methodVisibility = LombokProcessorUtil.getMethodModifier(psiAnnotation);
         if (methodVisibility != null) {
-            target.addAll(createFieldGetters(psiClass, methodVisibility));
+//            target.addAll(createFieldGetters(psiClass, methodVisibility));
+            GenerateModelHandler generateModelHandler = ApplicationManager.getApplication().getService(GenerateModelHandler.class);
+
+            PsiClass innerClass = generateModelHandler.createModelInnerClass(psiClass, psiAnnotation);
+            target.add(innerClass);
         }
     }
 

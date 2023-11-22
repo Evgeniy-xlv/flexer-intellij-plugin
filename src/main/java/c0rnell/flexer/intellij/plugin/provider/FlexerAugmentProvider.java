@@ -60,12 +60,6 @@ public class FlexerAugmentProvider extends PsiAugmentProvider {
         return LombokLibraryUtil.hasLombokLibrary(typeElement.getProject());
     }
 
-//    @Nullable
-//    @Override
-//    protected PsiType inferType(@NotNull PsiTypeElement typeElement) {
-//        return LombokLibraryUtil.hasLombokLibrary(typeElement.getProject()) ? valProcessor.inferType(typeElement) : null;
-//    }
-
     @NotNull
     @Override
     public <Psi extends PsiElement> List<Psi> getAugments(@NotNull PsiElement element,
@@ -108,7 +102,9 @@ public class FlexerAugmentProvider extends PsiAugmentProvider {
         final List<Psi> result = new ArrayList<>();
         final Collection<Processor> lombokProcessors = LombokProcessorProvider.getInstance(psiClass.getProject()).getLombokProcessors(type);
         for (Processor processor : lombokProcessors) {
+//            System.out.println("trying psiClass=" + psiClass + " with " + processor.getClass().getSimpleName());
             if (processor.notNameHintIsEqualToSupportedAnnotation(nameHint)) {
+//                System.out.println("processing psiClass=" + psiClass + " with " + processor.getClass().getSimpleName());
                 final List<? super PsiElement> generatedElements = processor.process(psiClass, nameHint);
                 for (Object psiElement : generatedElements) {
                     result.add((Psi) psiElement);

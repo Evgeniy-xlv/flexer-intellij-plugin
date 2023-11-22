@@ -40,7 +40,7 @@ public class GenerateModelFieldProcessor extends AbstractFieldProcessor {
         final String methodVisibility = LombokProcessorUtil.getMethodModifier(psiAnnotation);
         final PsiClass psiClass = psiField.getContainingClass();
         if (null != methodVisibility && null != psiClass) {
-            target.add(createGetterMethod(psiField, psiClass, methodVisibility));
+//            target.add(createGetterMethod(psiField, psiClass, methodVisibility));
         }
     }
 

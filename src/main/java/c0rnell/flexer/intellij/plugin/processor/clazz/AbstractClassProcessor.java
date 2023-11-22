@@ -63,7 +63,8 @@ public abstract class AbstractClassProcessor extends AbstractProcessor implement
         return result;
     }
 
-    protected boolean possibleToGenerateElementNamed(@Nullable String nameHint, @NotNull PsiClass psiClass,
+    protected boolean possibleToGenerateElementNamed(@Nullable String nameHint,
+                                                     @NotNull PsiClass psiClass,
                                                      @NotNull PsiAnnotation psiAnnotation) {
         return true;
     }
@@ -123,9 +124,13 @@ public abstract class AbstractClassProcessor extends AbstractProcessor implement
         return PsiAnnotationSearchUtil.findAnnotation(psiParentClass, getSupportedAnnotationClasses());
     }
 
-    protected abstract boolean validate(@NotNull PsiAnnotation psiAnnotation, @NotNull PsiClass psiClass, @NotNull ProblemBuilder builder);
+    protected abstract boolean validate(@NotNull PsiAnnotation psiAnnotation,
+                                        @NotNull PsiClass psiClass,
+                                        @NotNull ProblemBuilder builder);
 
-    protected abstract void generatePsiElements(@NotNull PsiClass psiClass, @NotNull PsiAnnotation psiAnnotation, @NotNull List<? super PsiElement> target);
+    protected abstract void generatePsiElements(@NotNull PsiClass psiClass,
+                                                @NotNull PsiAnnotation psiAnnotation,
+                                                @NotNull List<? super PsiElement> target);
 
     void validateOfParam(PsiClass psiClass, ProblemBuilder builder, PsiAnnotation psiAnnotation, Collection<String> ofProperty) {
         for (String fieldName : ofProperty) {

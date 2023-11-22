@@ -8,4 +8,6 @@ public interface AnnotationClassNames {
 
     @NonNls String GENERATE_MODEL = "c0rnell.flexer.model.GenerateModel";
 
+    @NonNls String GENERATE_MODEL_IGNORE = "c0rnell.flexer.model.GenerateModel.Ignore";
+
 }

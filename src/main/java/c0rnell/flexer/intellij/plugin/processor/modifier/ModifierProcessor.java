@@ -8,7 +8,6 @@ import java.util.Set;
 /**
  * To support augmentation of {@link PsiModifierList} properties, processors should implement this interface.
  *
- * @author Alexej Kubarev
  * @see com.intellij.psi.augment.PsiAugmentProvider#transformModifiers(PsiModifierList, Set<String>)
  */
 public interface ModifierProcessor {

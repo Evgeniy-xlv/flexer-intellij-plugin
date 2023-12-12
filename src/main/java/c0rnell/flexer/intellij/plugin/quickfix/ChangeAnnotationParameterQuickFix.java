@@ -1,6 +1,6 @@
 package c0rnell.flexer.intellij.plugin.quickfix;
 
-import c0rnell.flexer.intellij.plugin.LombokBundle;
+import c0rnell.flexer.intellij.plugin.FlexerBundle;
 import com.intellij.codeInsight.CodeInsightUtil;
 import com.intellij.codeInsight.intention.IntentionAction;
 import com.intellij.codeInspection.LocalQuickFixOnPsiElement;
@@ -21,91 +21,89 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
 
-/**
- * @author Plushnikov Michail
- */
 public class ChangeAnnotationParameterQuickFix extends LocalQuickFixOnPsiElement implements IntentionAction {
-  private final String myName;
-  private final String myNewValue;
 
-  public ChangeAnnotationParameterQuickFix(@NotNull PsiAnnotation psiAnnotation, @NotNull String name, @Nullable String newValue) {
-    super(psiAnnotation);
-    myName = name;
-    myNewValue = newValue;
-  }
+    private final String myName;
+    private final String myNewValue;
 
-  @Override
-  @NotNull
-  @IntentionName
-  public String getText() {
-    if (null == myNewValue) {
-      return LombokBundle.message("intention.name.remove.annotation.parameter.s", myName);
-    } else {
-      return LombokBundle.message("intention.name.set.annotation.parameter.s.s", myName, myNewValue);
+    public ChangeAnnotationParameterQuickFix(@NotNull PsiAnnotation psiAnnotation, @NotNull String name, @Nullable String newValue) {
+        super(psiAnnotation);
+        myName = name;
+        myNewValue = newValue;
     }
-  }
 
-  @Override
-  @NotNull
-  public String getFamilyName() {
-    return getText();
-  }
-
-  @Override
-  public boolean isAvailable(@NotNull Project project, Editor editor, PsiFile file) {
-    return isAvailable();
-  }
-
-  @Override
-  public void invoke(@NotNull Project project, Editor editor, PsiFile file) {
-    applyFix();
-  }
-
-  @Override
-  public void invoke(@NotNull Project project, @NotNull PsiFile psiFile, @NotNull PsiElement startElement, @NotNull PsiElement endElement) {
-    final PsiAnnotation myAnnotation = (PsiAnnotation) startElement;
-    final Editor editor = CodeInsightUtil.positionCursor(project, psiFile, myAnnotation);
-    if (editor != null) {
-      WriteCommandAction.writeCommandAction(project, psiFile).run(() ->
-        {
-          final PsiNameValuePair valuePair = selectAnnotationAttribute(myAnnotation);
-
-          if (null != valuePair) {
-            // delete this parameter
-            valuePair.delete();
-          }
-
-          if (null != myNewValue) {
-            //add new parameter
-            final PsiElementFactory elementFactory = JavaPsiFacade.getElementFactory(myAnnotation.getProject());
-            PsiAnnotation newAnnotation = elementFactory.createAnnotationFromText("@" + myAnnotation.getQualifiedName() + "(" + myName + "=" + myNewValue + ")", myAnnotation.getContext());
-            final PsiNameValuePair[] attributes = newAnnotation.getParameterList().getAttributes();
-
-            myAnnotation.setDeclaredAttributeValue(attributes[0].getName(), attributes[0].getValue());
-          }
-
-          UndoUtil.markPsiFileForUndo(psiFile);
+    @Override
+    @NotNull
+    @IntentionName
+    public String getText() {
+        if (null == myNewValue) {
+            return FlexerBundle.message("intention.name.remove.annotation.parameter.s", myName);
+        } else {
+            return FlexerBundle.message("intention.name.set.annotation.parameter.s.s", myName, myNewValue);
         }
-      );
     }
-  }
 
-  private PsiNameValuePair selectAnnotationAttribute(PsiAnnotation psiAnnotation) {
-    PsiNameValuePair result = null;
-    PsiNameValuePair[] attributes = psiAnnotation.getParameterList().getAttributes();
-    for (PsiNameValuePair attribute : attributes) {
-      @NonNls final String attributeName = attribute.getName();
-      if (Objects.equals(myName, attributeName) || attributeName == null && myName.equals(PsiAnnotation.DEFAULT_REFERENCED_METHOD_NAME)) {
-        result = attribute;
-        break;
-      }
+    @Override
+    @NotNull
+    public String getFamilyName() {
+        return getText();
     }
-    return result;
-  }
 
-  @Override
-  public boolean startInWriteAction() {
-    return false;
-  }
+    @Override
+    public boolean isAvailable(@NotNull Project project, Editor editor, PsiFile file) {
+        return isAvailable();
+    }
+
+    @Override
+    public void invoke(@NotNull Project project, Editor editor, PsiFile file) {
+        applyFix();
+    }
+
+    @Override
+    public void invoke(@NotNull Project project, @NotNull PsiFile psiFile, @NotNull PsiElement startElement, @NotNull PsiElement endElement) {
+        final PsiAnnotation myAnnotation = (PsiAnnotation) startElement;
+        final Editor editor = CodeInsightUtil.positionCursor(project, psiFile, myAnnotation);
+        if (editor != null) {
+            WriteCommandAction.writeCommandAction(project, psiFile).run(() ->
+                    {
+                        final PsiNameValuePair valuePair = selectAnnotationAttribute(myAnnotation);
+
+                        if (null != valuePair) {
+                            // delete this parameter
+                            valuePair.delete();
+                        }
+
+                        if (null != myNewValue) {
+                            //add new parameter
+                            final PsiElementFactory elementFactory = JavaPsiFacade.getElementFactory(myAnnotation.getProject());
+                            PsiAnnotation newAnnotation = elementFactory.createAnnotationFromText("@" + myAnnotation.getQualifiedName() + "(" + myName + "=" + myNewValue + ")", myAnnotation.getContext());
+                            final PsiNameValuePair[] attributes = newAnnotation.getParameterList().getAttributes();
+
+                            myAnnotation.setDeclaredAttributeValue(attributes[0].getName(), attributes[0].getValue());
+                        }
+
+                        UndoUtil.markPsiFileForUndo(psiFile);
+                    }
+            );
+        }
+    }
+
+    private PsiNameValuePair selectAnnotationAttribute(PsiAnnotation psiAnnotation) {
+        PsiNameValuePair result = null;
+        PsiNameValuePair[] attributes = psiAnnotation.getParameterList().getAttributes();
+        for (PsiNameValuePair attribute : attributes) {
+            @NonNls final String attributeName = attribute.getName();
+            if (Objects.equals(myName, attributeName) || attributeName == null && myName.equals(PsiAnnotation.DEFAULT_REFERENCED_METHOD_NAME)) {
+                result = attribute;
+                break;
+            }
+        }
+        return result;
+    }
+
+    @Override
+    public boolean startInWriteAction() {
+        return false;
+    }
 
 }

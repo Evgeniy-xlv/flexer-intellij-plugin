@@ -10,16 +10,8 @@
     <depends>com.intellij.java</depends>
 
     <extensions defaultExtensionNs="com.intellij">
-        <!--    <localInspection language="JAVA"-->
-        <!--      displayName="Lombok builder is missing non-null fields"-->
-        <!--      groupPath="Java"-->
-        <!--      groupBundle="messages.InspectionsBundle"-->
-        <!--      groupKey="group.names.probable.bugs"-->
-        <!--      enabledByDefault="true"-->
-        <!--      level="ERROR"-->
-        <!--      implementationClass="c0rnell.flexer.intellij.plugin.LombokBuilderInspection"/>-->
 
-        <projectService serviceImplementation="c0rnell.flexer.intellij.plugin.provider.LombokProcessorProvider"/>
+        <projectService serviceImplementation="c0rnell.flexer.intellij.plugin.provider.FlexerProcessorProvider"/>
 
         <applicationService
                 serviceImplementation="c0rnell.flexer.intellij.plugin.processor.clazz.GenerateModelHandler"/>

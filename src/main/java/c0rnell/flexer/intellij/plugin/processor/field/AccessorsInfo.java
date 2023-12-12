@@ -13,10 +13,8 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Collection;
 import java.util.Collections;
 
-/**
- * @author Plushnikov Michail
- */
 public class AccessorsInfo {
+
     public static final AccessorsInfo EMPTY = new AccessorsInfo(false, false, false);
 
     private final boolean fluent;
@@ -95,24 +93,24 @@ public class AccessorsInfo {
         if (null != psiClass) {
 //            final ConfigDiscovery configDiscovery = ConfigDiscovery.getInstance();
             if (null == fluentDeclaredValue) {
-//                isFluent = configDiscovery.getBooleanLombokConfigProperty(ConfigKey.ACCESSORS_FLUENT, psiClass);
+//                isFluent = configDiscovery.getBooleanFlexerConfigProperty(ConfigKey.ACCESSORS_FLUENT, psiClass);
             } else {
                 isFluent = fluentDeclaredValue;
             }
 
             if (null == chainDeclaredValue) {
-//                isChained = configDiscovery.getBooleanLombokConfigProperty(ConfigKey.ACCESSORS_CHAIN, psiClass);
+//                isChained = configDiscovery.getBooleanFlexerConfigProperty(ConfigKey.ACCESSORS_CHAIN, psiClass);
             } else {
                 isChained = chainDeclaredValue;
             }
 
             if (prefixDeclared.isEmpty()) {
-//                prefixes = configDiscovery.getMultipleValueLombokConfigProperty(ConfigKey.ACCESSORS_PREFIX, psiClass);
+//                prefixes = configDiscovery.getMultipleValueFlexerConfigProperty(ConfigKey.ACCESSORS_PREFIX, psiClass);
             } else {
                 prefixes = prefixDeclared.toArray(new String[0]);
             }
 
-//            doNotUseIsPrefix = configDiscovery.getBooleanLombokConfigProperty(ConfigKey.GETTER_NO_IS_PREFIX, psiClass);
+//            doNotUseIsPrefix = configDiscovery.getBooleanFlexerConfigProperty(ConfigKey.GETTER_NO_IS_PREFIX, psiClass);
 
         } else {
             isFluent = null != fluentDeclaredValue && fluentDeclaredValue;
@@ -164,7 +162,7 @@ public class AccessorsInfo {
     public String removePrefix(String fieldName) {
         for (String prefix : prefixes) {
             if (canPrefixApply(fieldName, prefix)) {
-                return prefix.isEmpty() ? fieldName : decapitalizeLikeLombok(fieldName.substring(prefix.length()));
+                return prefix.isEmpty() ? fieldName : decapitalizeFirstChar(fieldName.substring(prefix.length()));
             }
         }
         return fieldName;
@@ -178,7 +176,7 @@ public class AccessorsInfo {
                (!Character.isLetter(prefix.charAt(prefix.length() - 1)) || !Character.isLowerCase(fieldName.charAt(prefixLength)));
     }
 
-    private String decapitalizeLikeLombok(String name) {
+    private String decapitalizeFirstChar(String name) {
         if (name == null || name.isEmpty()) {
             return name;
         }

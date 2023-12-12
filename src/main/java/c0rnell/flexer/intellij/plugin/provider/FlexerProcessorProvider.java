@@ -1,6 +1,6 @@
 package c0rnell.flexer.intellij.plugin.provider;
 
-import c0rnell.flexer.intellij.plugin.processor.LombokProcessorManager;
+import c0rnell.flexer.intellij.plugin.processor.FlexerProcessorManager;
 import c0rnell.flexer.intellij.plugin.processor.Processor;
 import c0rnell.flexer.intellij.plugin.util.PsiAnnotationSearchUtil;
 import c0rnell.flexer.intellij.plugin.util.PsiClassUtil;
@@ -23,28 +23,29 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class LombokProcessorProvider implements Disposable {
+public class FlexerProcessorProvider implements Disposable {
 
-    public static LombokProcessorProvider getInstance(@NotNull Project project) {
-        final LombokProcessorProvider service = ServiceManager.getService(project, LombokProcessorProvider.class);
+    public static FlexerProcessorProvider getInstance(@NotNull Project project) {
+        final FlexerProcessorProvider service = ServiceManager.getService(project, FlexerProcessorProvider.class);
         service.checkInitialized();
         return service;
     }
 
-    private final Map<Class, Collection<Processor>> lombokTypeProcessors;
+    private final Map<Class, Collection<Processor>> flexerTypeProcessors;
 
-    private final Map<String, Collection<Processor>> lombokProcessors;
+    private final Map<String, Collection<Processor>> flexerProcessors;
     private final Collection<String> registeredAnnotationNames;
     private boolean alreadyInitialized;
 
-    public LombokProcessorProvider() {
-        lombokProcessors = new ConcurrentHashMap<>();
-        lombokTypeProcessors = new ConcurrentHashMap<>();
+    public FlexerProcessorProvider() {
+        flexerProcessors = new ConcurrentHashMap<>();
+        flexerTypeProcessors = new ConcurrentHashMap<>();
         registeredAnnotationNames = ConcurrentHashMap.newKeySet();
     }
 
     @Override
-    public void dispose() { }
+    public void dispose() {
+    }
 
     private void checkInitialized() {
         if (!alreadyInitialized) {
@@ -54,39 +55,39 @@ public class LombokProcessorProvider implements Disposable {
     }
 
     public void initProcessors() {
-        lombokProcessors.clear();
-        lombokTypeProcessors.clear();
+        flexerProcessors.clear();
+        flexerTypeProcessors.clear();
         registeredAnnotationNames.clear();
 
-        for (Processor processor : LombokProcessorManager.getLombokProcessors()) {
+        for (Processor processor : FlexerProcessorManager.getFlexerProcessors()) {
             String[] annotationClasses = processor.getSupportedAnnotationClasses();
             for (@NotNull String annotationClass : annotationClasses) {
-                putProcessor(lombokProcessors, annotationClass, processor);
-                putProcessor(lombokProcessors, StringUtil.getShortName(annotationClass), processor);
+                putProcessor(flexerProcessors, annotationClass, processor);
+                putProcessor(flexerProcessors, StringUtil.getShortName(annotationClass), processor);
             }
 
-            putProcessor(lombokTypeProcessors, processor.getSupportedClass(), processor);
+            putProcessor(flexerTypeProcessors, processor.getSupportedClass(), processor);
         }
 
-        registeredAnnotationNames.addAll(lombokProcessors.keySet());
+        registeredAnnotationNames.addAll(flexerProcessors.keySet());
     }
 
     @NotNull
-    Collection<Processor> getLombokProcessors(@NotNull Class supportedClass) {
-        return lombokTypeProcessors.computeIfAbsent(supportedClass, k -> ConcurrentHashMap.newKeySet());
+    Collection<Processor> getFlexerProcessors(@NotNull Class supportedClass) {
+        return flexerTypeProcessors.computeIfAbsent(supportedClass, k -> ConcurrentHashMap.newKeySet());
     }
 
     @NotNull
     public Collection<Processor> getProcessors(@NotNull PsiAnnotation psiAnnotation) {
         final String qualifiedName = psiAnnotation.getQualifiedName();
-        final Collection<Processor> result = qualifiedName == null ? null : lombokProcessors.get(qualifiedName);
+        final Collection<Processor> result = qualifiedName == null ? null : flexerProcessors.get(qualifiedName);
         return result == null ? Collections.emptySet() : result;
     }
 
     @NotNull
-    Collection<LombokProcessorData> getApplicableProcessors(@NotNull PsiMember psiMember) {
-        Collection<LombokProcessorData> result = Collections.emptyList();
-        if (verifyLombokAnnotationPresent(psiMember)) {
+    Collection<FlexerProcessorData> getApplicableProcessors(@NotNull PsiMember psiMember) {
+        Collection<FlexerProcessorData> result = Collections.emptyList();
+        if (verifyFlexerAnnotationPresent(psiMember)) {
             result = new ArrayList<>();
 
             addApplicableProcessors(psiMember, result);
@@ -103,7 +104,7 @@ public class LombokProcessorProvider implements Disposable {
         valueList.add(value);
     }
 
-    private boolean verifyLombokAnnotationPresent(@NotNull PsiClass psiClass) {
+    private boolean verifyFlexerAnnotationPresent(@NotNull PsiClass psiClass) {
         if (PsiAnnotationSearchUtil.checkAnnotationsSimpleNameExistsIn(psiClass, registeredAnnotationNames)) {
             return true;
         }
@@ -121,27 +122,27 @@ public class LombokProcessorProvider implements Disposable {
         }
         final PsiElement psiClassParent = psiClass.getParent();
         if (psiClassParent instanceof PsiClass) {
-            return verifyLombokAnnotationPresent((PsiClass) psiClassParent);
+            return verifyFlexerAnnotationPresent((PsiClass) psiClassParent);
         }
 
         return false;
     }
 
-    private boolean verifyLombokAnnotationPresent(@NotNull PsiMember psiMember) {
+    private boolean verifyFlexerAnnotationPresent(@NotNull PsiMember psiMember) {
         if (PsiAnnotationSearchUtil.checkAnnotationsSimpleNameExistsIn(psiMember, registeredAnnotationNames)) {
             return true;
         }
 
         final PsiClass psiClass = psiMember.getContainingClass();
-        return null != psiClass && verifyLombokAnnotationPresent(psiClass);
+        return null != psiClass && verifyFlexerAnnotationPresent(psiClass);
     }
 
-    private void addApplicableProcessors(@NotNull PsiMember psiMember, @NotNull Collection<LombokProcessorData> target) {
+    private void addApplicableProcessors(@NotNull PsiMember psiMember, @NotNull Collection<FlexerProcessorData> target) {
         final PsiModifierList psiModifierList = psiMember.getModifierList();
         if (null != psiModifierList) {
             for (PsiAnnotation psiAnnotation : psiModifierList.getAnnotations()) {
                 for (Processor processor : getProcessors(psiAnnotation)) {
-                    target.add(new LombokProcessorData(processor, psiAnnotation));
+                    target.add(new FlexerProcessorData(processor, psiAnnotation));
                 }
             }
         }

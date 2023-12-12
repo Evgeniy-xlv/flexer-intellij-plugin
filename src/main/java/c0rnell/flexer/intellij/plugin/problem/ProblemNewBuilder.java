@@ -7,56 +7,54 @@ import com.intellij.codeInspection.util.InspectionMessage;
 import java.util.HashSet;
 import java.util.Set;
 
-/**
- * @author Plushnikov Michail
- */
 public class ProblemNewBuilder implements ProblemBuilder {
-  private final Set<LombokProblem> problems;
 
-  public ProblemNewBuilder() {
-    this(1);
-  }
+    private final Set<FlexerProblem> problems;
 
-  public ProblemNewBuilder(int size) {
-    this.problems = new HashSet<>(size);
-  }
+    public ProblemNewBuilder() {
+        this(1);
+    }
 
-  public Set<LombokProblem> getProblems() {
-    return problems;
-  }
+    public ProblemNewBuilder(int size) {
+        this.problems = new HashSet<>(size);
+    }
 
-  @Override
-  public void addWarning(@InspectionMessage String message) {
-    addProblem(message, ProblemHighlightType.GENERIC_ERROR_OR_WARNING);
-  }
+    public Set<FlexerProblem> getProblems() {
+        return problems;
+    }
 
-  @Override
-  public void addWarning(@InspectionMessage String message, Object... params) {
-    addProblem(String.format(message, params), ProblemHighlightType.GENERIC_ERROR_OR_WARNING);
-  }
+    @Override
+    public void addWarning(@InspectionMessage String message) {
+        addProblem(message, ProblemHighlightType.GENERIC_ERROR_OR_WARNING);
+    }
 
-  @Override
-  public void addError(@InspectionMessage String message) {
-    addProblem(message, ProblemHighlightType.GENERIC_ERROR);
-  }
+    @Override
+    public void addWarning(@InspectionMessage String message, Object... params) {
+        addProblem(String.format(message, params), ProblemHighlightType.GENERIC_ERROR_OR_WARNING);
+    }
 
-  @Override
-  public void addError(@InspectionMessage String message, Object... params) {
-    addProblem(String.format(message, params), ProblemHighlightType.GENERIC_ERROR);
-  }
+    @Override
+    public void addError(@InspectionMessage String message) {
+        addProblem(message, ProblemHighlightType.GENERIC_ERROR);
+    }
 
-  @Override
-  public void addWarning(@InspectionMessage String message, LocalQuickFix... quickFixes) {
-    addProblem(message, ProblemHighlightType.GENERIC_ERROR_OR_WARNING, quickFixes);
-  }
+    @Override
+    public void addError(@InspectionMessage String message, Object... params) {
+        addProblem(String.format(message, params), ProblemHighlightType.GENERIC_ERROR);
+    }
 
-  @Override
-  public void addError(@InspectionMessage String message, LocalQuickFix... quickFixes) {
-    addProblem(message, ProblemHighlightType.GENERIC_ERROR, quickFixes);
-  }
+    @Override
+    public void addWarning(@InspectionMessage String message, LocalQuickFix... quickFixes) {
+        addProblem(message, ProblemHighlightType.GENERIC_ERROR_OR_WARNING, quickFixes);
+    }
 
-  @Override
-  public void addProblem(@InspectionMessage String message, ProblemHighlightType highlightType, LocalQuickFix... quickFixes) {
-    problems.add(new LombokProblem(message, highlightType, quickFixes));
-  }
+    @Override
+    public void addError(@InspectionMessage String message, LocalQuickFix... quickFixes) {
+        addProblem(message, ProblemHighlightType.GENERIC_ERROR, quickFixes);
+    }
+
+    @Override
+    public void addProblem(@InspectionMessage String message, ProblemHighlightType highlightType, LocalQuickFix... quickFixes) {
+        problems.add(new FlexerProblem(message, highlightType, quickFixes));
+    }
 }

@@ -1,9 +1,9 @@
 package c0rnell.flexer.intellij.plugin.provider;
 
-import c0rnell.flexer.intellij.plugin.processor.LombokProcessorManager;
+import c0rnell.flexer.intellij.plugin.processor.FlexerProcessorManager;
 import c0rnell.flexer.intellij.plugin.processor.Processor;
 import c0rnell.flexer.intellij.plugin.processor.modifier.ModifierProcessor;
-import c0rnell.flexer.intellij.plugin.util.LombokLibraryUtil;
+import c0rnell.flexer.intellij.plugin.util.LibraryUtil;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElement;
@@ -24,21 +24,22 @@ import java.util.List;
 import java.util.Set;
 
 public class FlexerAugmentProvider extends PsiAugmentProvider {
+
     private static final Logger log = Logger.getInstance(FlexerAugmentProvider.class.getName());
 
     private final Collection<ModifierProcessor> modifierProcessors;
 
     public FlexerAugmentProvider() {
-        log.debug("LombokAugmentProvider created");
+        log.debug("FlexerAugmentProvider created");
 
-        modifierProcessors = LombokProcessorManager.getLombokModifierProcessors();
+        modifierProcessors = FlexerProcessorManager.getFlexerModifierProcessors();
     }
 
     @NotNull
     @Override
     protected Set<String> transformModifiers(@NotNull PsiModifierList modifierList, @NotNull final Set<String> modifiers) {
-        // skip if no lombok library is present
-        if (!LombokLibraryUtil.hasLombokLibrary(modifierList.getProject())) {
+        // skip if no flexer library is present
+        if (!LibraryUtil.hasThisLibrary(modifierList.getProject())) {
             return modifiers;
         }
 
@@ -57,7 +58,7 @@ public class FlexerAugmentProvider extends PsiAugmentProvider {
 
     @Override
     public boolean canInferType(@NotNull PsiTypeElement typeElement) {
-        return LombokLibraryUtil.hasLombokLibrary(typeElement.getProject());
+        return LibraryUtil.hasThisLibrary(typeElement.getProject());
     }
 
     @NotNull
@@ -82,8 +83,8 @@ public class FlexerAugmentProvider extends PsiAugmentProvider {
         if (psiClass.isAnnotationType() || psiClass.isInterface()) {
             return emptyResult;
         }
-        // skip processing if disabled, or no lombok library is present
-//        if (!LombokLibraryUtil.hasLombokLibrary(element.getProject())) {
+        // skip processing if disabled, or no flexer library is present
+//        if (!LibraryUtil.hasFlexerLibrary(element.getProject())) {
 //            return emptyResult;
 //        }
 
@@ -100,8 +101,8 @@ public class FlexerAugmentProvider extends PsiAugmentProvider {
     @NotNull
     private static <Psi extends PsiElement> List<Psi> getPsis(PsiClass psiClass, Class<Psi> type, String nameHint) {
         final List<Psi> result = new ArrayList<>();
-        final Collection<Processor> lombokProcessors = LombokProcessorProvider.getInstance(psiClass.getProject()).getLombokProcessors(type);
-        for (Processor processor : lombokProcessors) {
+        final Collection<Processor> processors = FlexerProcessorProvider.getInstance(psiClass.getProject()).getFlexerProcessors(type);
+        for (Processor processor : processors) {
 //            System.out.println("trying psiClass=" + psiClass + " with " + processor.getClass().getSimpleName());
             if (processor.notNameHintIsEqualToSupportedAnnotation(nameHint)) {
 //                System.out.println("processing psiClass=" + psiClass + " with " + processor.getClass().getSimpleName());

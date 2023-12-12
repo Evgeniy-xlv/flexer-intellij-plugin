@@ -10,9 +10,10 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Arrays;
 import java.util.Collection;
 
-public final class LombokProcessorManager {
+public final class FlexerProcessorManager {
+
     @NotNull
-    public static Collection<Processor> getLombokProcessors() {
+    public static Collection<Processor> getFlexerProcessors() {
         return Arrays.asList(
                 ApplicationManager.getApplication().getService(GenerateModelClassGeneratorProcessor.class),
                 ApplicationManager.getApplication().getService(GenerateModelMethodGeneratorProcessor.class),
@@ -21,7 +22,7 @@ public final class LombokProcessorManager {
     }
 
     @NotNull
-    public static Collection<ModifierProcessor> getLombokModifierProcessors() {
+    public static Collection<ModifierProcessor> getFlexerModifierProcessors() {
         return Arrays.asList();
     }
 }

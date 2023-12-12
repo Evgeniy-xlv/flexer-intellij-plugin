@@ -17,10 +17,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * @author Plushnikov Michail
- */
-public final class LombokProcessorUtil {
+public final class ProcessorUtil {
 
     @NonNls
     private static final String ACCESS_LEVEL_PRIVATE = "PRIVATE";
@@ -94,7 +91,7 @@ public final class LombokProcessorUtil {
         if (!(onXValue instanceof PsiAnnotation)) {
             return Collections.emptyList();
         }
-        Collection<PsiAnnotation> annotations = PsiAnnotationUtil.getAnnotationValues((PsiAnnotation)onXValue, "value", PsiAnnotation.class);
+        Collection<PsiAnnotation> annotations = PsiAnnotationUtil.getAnnotationValues((PsiAnnotation) onXValue, "value", PsiAnnotation.class);
         return collectAnnotationStrings(annotations);
     }
 

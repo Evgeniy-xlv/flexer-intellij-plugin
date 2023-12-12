@@ -1,15 +1,15 @@
 package c0rnell.flexer.intellij.plugin.processor.field;
 
-import c0rnell.flexer.intellij.plugin.LombokBundle;
+import c0rnell.flexer.intellij.plugin.FlexerBundle;
+import c0rnell.flexer.intellij.plugin.problem.FlexerProblem;
 import c0rnell.flexer.intellij.plugin.problem.ProblemBuilder;
-import c0rnell.flexer.intellij.plugin.util.LombokProcessorUtil;
-import c0rnell.flexer.intellij.plugin.util.LombokUtils;
-import c0rnell.flexer.intellij.plugin.util.PsiAnnotationSearchUtil;
-import c0rnell.flexer.intellij.plugin.util.PsiClassUtil;
-import c0rnell.flexer.intellij.plugin.problem.LombokProblem;
 import c0rnell.flexer.intellij.plugin.problem.ProblemEmptyBuilder;
 import c0rnell.flexer.intellij.plugin.problem.ProblemNewBuilder;
 import c0rnell.flexer.intellij.plugin.processor.AbstractProcessor;
+import c0rnell.flexer.intellij.plugin.util.ProcessorUtil;
+import c0rnell.flexer.intellij.plugin.util.PsiAnnotationSearchUtil;
+import c0rnell.flexer.intellij.plugin.util.PsiClassUtil;
+import c0rnell.flexer.intellij.plugin.util.Utils;
 import com.intellij.psi.CommonClassNames;
 import com.intellij.psi.PsiAnnotation;
 import com.intellij.psi.PsiClass;
@@ -26,9 +26,7 @@ import java.util.List;
 import java.util.stream.StreamSupport;
 
 /**
- * Base lombok processor class for field annotations
- *
- * @author Plushnikov Michail
+ * Base flexer processor class for field annotations
  */
 public abstract class AbstractFieldProcessor extends AbstractProcessor implements FieldProcessor {
 
@@ -80,8 +78,8 @@ public abstract class AbstractFieldProcessor extends AbstractProcessor implement
 
     @NotNull
     @Override
-    public Collection<LombokProblem> verifyAnnotation(@NotNull PsiAnnotation psiAnnotation) {
-        Collection<LombokProblem> result = Collections.emptyList();
+    public Collection<FlexerProblem> verifyAnnotation(@NotNull PsiAnnotation psiAnnotation) {
+        Collection<FlexerProblem> result = Collections.emptyList();
 
         PsiField psiField = PsiTreeUtil.getParentOfType(psiAnnotation, PsiField.class);
         if (null != psiField) {
@@ -99,24 +97,24 @@ public abstract class AbstractFieldProcessor extends AbstractProcessor implement
                                           @NotNull PsiField psiField,
                                           @NotNull ProblemBuilder builder,
                                           @NotNull String parameterName) {
-        final List<String> copyableAnnotations = copyableAnnotations(psiField, LombokUtils.BASE_COPYABLE_ANNOTATIONS);
+        final List<String> copyableAnnotations = copyableAnnotations(psiField, Utils.BASE_COPYABLE_ANNOTATIONS);
 
         if (!copyableAnnotations.isEmpty()) {
-            final Iterable<String> onXAnnotations = LombokProcessorUtil.getOnX(psiAnnotation, parameterName);
+            final Iterable<String> onXAnnotations = ProcessorUtil.getOnX(psiAnnotation, parameterName);
 
             for (String copyableAnnotation : copyableAnnotations) {
                 for (String onXAnnotation : onXAnnotations) {
                     if (onXAnnotation.startsWith(copyableAnnotation)) {
-                        builder.addError(LombokBundle.message("inspection.message.annotation.copy.duplicate", copyableAnnotation));
+                        builder.addError(FlexerBundle.message("inspection.message.annotation.copy.duplicate", copyableAnnotation));
                     }
                 }
             }
         }
 
         if (psiField.isDeprecated()) {
-            final Iterable<String> onMethodAnnotations = LombokProcessorUtil.getOnX(psiAnnotation, "onMethod");
+            final Iterable<String> onMethodAnnotations = ProcessorUtil.getOnX(psiAnnotation, "onMethod");
             if (StreamSupport.stream(onMethodAnnotations.spliterator(), false).anyMatch(CommonClassNames.JAVA_LANG_DEPRECATED::equals)) {
-                builder.addError(LombokBundle.message("inspection.message.annotation.copy.duplicate", CommonClassNames.JAVA_LANG_DEPRECATED));
+                builder.addError(FlexerBundle.message("inspection.message.annotation.copy.duplicate", CommonClassNames.JAVA_LANG_DEPRECATED));
             }
         }
     }

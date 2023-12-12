@@ -1,6 +1,6 @@
 package c0rnell.flexer.intellij.plugin.processor;
 
-import c0rnell.flexer.intellij.plugin.util.LombokProcessorUtil;
+import c0rnell.flexer.intellij.plugin.util.ProcessorUtil;
 import com.intellij.codeInsight.AnnotationUtil;
 import com.intellij.codeInsight.intention.AddAnnotationPsiFix;
 import com.intellij.psi.PsiAnnotation;
@@ -18,11 +18,10 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * Base lombok processor class
- *
- * @author Plushnikov Michail
+ * Base flexer processor class
  */
 public abstract class AbstractProcessor implements Processor {
+
     /**
      * Annotation classes this processor supports
      */
@@ -32,12 +31,12 @@ public abstract class AbstractProcessor implements Processor {
      */
     private final Class<? extends PsiElement> supportedClass;
     /**
-     * Instance of config discovery service to access lombok.config informations
+     * Instance of config discovery service to access flexer.config informations
      */
 //    protected final ConfigDiscovery configDiscovery;
 
     /**
-     * Constructor for all Lombok-Processors
+     * Constructor for all Flexer-Processors
      *
      * @param supportedClass             kind of output elements this processor supports
      * @param supportedAnnotationClasses annotations this processor supports
@@ -68,7 +67,7 @@ public abstract class AbstractProcessor implements Processor {
     }
 
 //    protected void filterToleratedElements(@NotNull Collection<? extends PsiModifierListOwner> definedMethods) {
-//        definedMethods.removeIf(definedMethod -> PsiAnnotationSearchUtil.isAnnotatedWith(definedMethod, LombokClassNames.TOLERATE));
+//        definedMethods.removeIf(definedMethod -> PsiAnnotationSearchUtil.isAnnotatedWith(definedMethod, AnnotationClassNames.TOLERATE));
 //    }
 //
 //    protected boolean readAnnotationOrConfigProperty(@NotNull PsiAnnotation psiAnnotation, @NotNull PsiClass psiClass,
@@ -76,7 +75,7 @@ public abstract class AbstractProcessor implements Processor {
 //        final boolean result;
 //        final Boolean declaredAnnotationValue = PsiAnnotationUtil.getDeclaredBooleanAnnotationValue(psiAnnotation, annotationParameter);
 //        if (null == declaredAnnotationValue) {
-//            result = configDiscovery.getBooleanLombokConfigProperty(configKey, psiClass);
+//            result = configDiscovery.getBooleanFlexerConfigProperty(configKey, psiClass);
 //        }
 //        else {
 //            result = declaredAnnotationValue;
@@ -91,7 +90,7 @@ public abstract class AbstractProcessor implements Processor {
             return;
         }
 
-        Iterable<String> annotationsToAdd = LombokProcessorUtil.getOnX(processedAnnotation, onXParameterName);
+        Iterable<String> annotationsToAdd = ProcessorUtil.getOnX(processedAnnotation, onXParameterName);
         annotationsToAdd.forEach(modifierList::addAnnotation);
     }
 
@@ -100,9 +99,9 @@ public abstract class AbstractProcessor implements Processor {
 
 //        final PsiClass containingClass = psiField.getContainingClass();
 //        // append only for BASE_COPYABLE
-//        if (copyableAnnotations == LombokUtils.BASE_COPYABLE_ANNOTATIONS && null != containingClass) {
+//        if (copyableAnnotations == Utils.BASE_COPYABLE_ANNOTATIONS && null != containingClass) {
 //            String[] configuredCopyableAnnotations =
-//                    ConfigDiscovery.getInstance().getMultipleValueLombokConfigProperty(ConfigKey.COPYABLE_ANNOTATIONS, containingClass);
+//                    ConfigDiscovery.getInstance().getMultipleValueFlexerConfigProperty(ConfigKey.COPYABLE_ANNOTATIONS, containingClass);
 //            combinedListOfCopyableAnnotations.addAll(Arrays.asList(configuredCopyableAnnotations));
 //        }
 
@@ -126,7 +125,7 @@ public abstract class AbstractProcessor implements Processor {
     }
 
     @Override
-    public LombokPsiElementUsage checkFieldUsage(@NotNull PsiField psiField, @NotNull PsiAnnotation psiAnnotation) {
-        return LombokPsiElementUsage.NONE;
+    public FlexerPsiElementUsage checkFieldUsage(@NotNull PsiField psiField, @NotNull PsiAnnotation psiAnnotation) {
+        return FlexerPsiElementUsage.NONE;
     }
 }

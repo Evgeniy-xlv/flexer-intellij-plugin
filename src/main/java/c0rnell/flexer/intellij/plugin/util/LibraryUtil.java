@@ -9,15 +9,14 @@ import com.intellij.psi.util.CachedValueProvider;
 import com.intellij.psi.util.CachedValuesManager;
 import org.jetbrains.annotations.NotNull;
 
-public class LombokLibraryUtil {
+public class LibraryUtil {
 
-//    private static final String LOMBOK_PACKAGE = "lombok.experimental";
-    private static final String LOMBOK_PACKAGE = "c0rnell.flexer";
+    private static final String LIB_PACKAGE = "c0rnell.flexer";
 
-    public static boolean hasLombokLibrary(@NotNull Project project) {
+    public static boolean hasThisLibrary(@NotNull Project project) {
         ApplicationManager.getApplication().assertReadAccessAllowed();
         return CachedValuesManager.getManager(project).getCachedValue(project, () -> {
-            PsiPackage aPackage = JavaPsiFacade.getInstance(project).findPackage(LOMBOK_PACKAGE);
+            PsiPackage aPackage = JavaPsiFacade.getInstance(project).findPackage(LIB_PACKAGE);
             return new CachedValueProvider.Result<>(aPackage, ProjectRootManager.getInstance(project));
         }) != null;
     }

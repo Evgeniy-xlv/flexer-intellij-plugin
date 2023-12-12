@@ -1,6 +1,6 @@
 package c0rnell.flexer.intellij.plugin.processor.method;
 
-import c0rnell.flexer.intellij.plugin.problem.LombokProblem;
+import c0rnell.flexer.intellij.plugin.problem.FlexerProblem;
 import c0rnell.flexer.intellij.plugin.problem.ProblemBuilder;
 import c0rnell.flexer.intellij.plugin.problem.ProblemEmptyBuilder;
 import c0rnell.flexer.intellij.plugin.problem.ProblemNewBuilder;
@@ -21,9 +21,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * Base lombok processor class for method annotations
- *
- * @author Tomasz Kalkosiński
+ * Base flexer processor class for method annotations
  */
 public abstract class AbstractMethodProcessor extends AbstractProcessor implements MethodProcessor {
 
@@ -74,8 +72,8 @@ public abstract class AbstractMethodProcessor extends AbstractProcessor implemen
 
     @NotNull
     @Override
-    public Collection<LombokProblem> verifyAnnotation(@NotNull PsiAnnotation psiAnnotation) {
-        Collection<LombokProblem> result = Collections.emptyList();
+    public Collection<FlexerProblem> verifyAnnotation(@NotNull PsiAnnotation psiAnnotation) {
+        Collection<FlexerProblem> result = Collections.emptyList();
 
         PsiMethod psiMethod = PsiTreeUtil.getParentOfType(psiAnnotation, PsiMethod.class);
         if (null != psiMethod) {

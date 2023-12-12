@@ -1,10 +1,10 @@
 package c0rnell.flexer.intellij.plugin.processor.clazz;
 
 import c0rnell.flexer.intellij.plugin.AnnotationClassNames;
-import c0rnell.flexer.intellij.plugin.psi.LombokLightClassBuilder;
-import c0rnell.flexer.intellij.plugin.psi.LombokLightFieldBuilder;
-import c0rnell.flexer.intellij.plugin.psi.LombokLightMethodBuilder;
-import c0rnell.flexer.intellij.plugin.psi.LombokLightParameter;
+import c0rnell.flexer.intellij.plugin.psi.FlexerLightClassBuilder;
+import c0rnell.flexer.intellij.plugin.psi.FlexerLightFieldBuilder;
+import c0rnell.flexer.intellij.plugin.psi.FlexerLightMethodBuilder;
+import c0rnell.flexer.intellij.plugin.psi.FlexerLightParameter;
 import c0rnell.flexer.intellij.plugin.util.PsiAnnotationSearchUtil;
 import c0rnell.flexer.intellij.plugin.util.PsiAnnotationUtil;
 import c0rnell.flexer.intellij.plugin.util.PsiClassUtil;
@@ -38,7 +38,7 @@ public class GenerateModelHandler {
                                           @NotNull PsiAnnotation psiAnnotation) {
         String innerClassName = PsiAnnotationUtil.getStringAnnotationValue(psiAnnotation, ANNOTATION_MODEL_CLASS_NAME, MODEL_CLASS_NAME);
 
-        LombokLightClassBuilder innerClass = new LombokLightClassBuilder(psiClass, innerClassName, psiClass.getQualifiedName() + "." + innerClassName)
+        FlexerLightClassBuilder innerClass = new FlexerLightClassBuilder(psiClass, innerClassName, psiClass.getQualifiedName() + "." + innerClassName)
                 .withContainingClass(psiClass)
                 .withNavigationElement(psiAnnotation)
                 .withParameterTypes(psiClass.getTypeParameterList())
@@ -49,7 +49,7 @@ public class GenerateModelHandler {
             Collection<PsiField> fields = new ArrayList<>();
             for (PsiField ownerField : ownerFields) {
                 fields.add(
-                        new LombokLightFieldBuilder(innerClass.getManager(), ownerField.getName(), ownerField.getType())
+                        new FlexerLightFieldBuilder(innerClass.getManager(), ownerField.getName(), ownerField.getType())
                                 .withContainingClass(innerClass)
                                 .withNavigationElement(psiAnnotation)
                                 .withModifier(PsiModifier.PRIVATE)
@@ -60,7 +60,7 @@ public class GenerateModelHandler {
         });
         innerClass.withMethodSupplier(() -> {
             Collection<PsiMethod> psiMethods = new ArrayList<>();
-//            LombokLightMethodBuilder constructorBuilder = new LombokLightMethodBuilder(innerClass.getManager(), innerClassName)
+//            FlexerLightMethodBuilder constructorBuilder = new FlexerLightMethodBuilder(innerClass.getManager(), innerClassName)
 //                    .withConstructor(true)
 //                    .withContainingClass(innerClass)
 //                    .withNavigationElement(psiAnnotation)
@@ -70,7 +70,7 @@ public class GenerateModelHandler {
 //            Collection<PsiField> ownerFields = collectClassFieldsInternWithIgnore(psiClass);
 //            for (PsiField ownerField : ownerFields) {
 //                constructorBuilder.withParameter(
-//                        new LombokLightParameter(ownerField.getName(), ownerField.getType(), constructorBuilder)
+//                        new FlexerLightParameter(ownerField.getName(), ownerField.getType(), constructorBuilder)
 //                );
 //
 //                blockText.append(String.format("this.%s = %s;\n", ownerField.getName(), ownerField.getName()));
@@ -89,7 +89,7 @@ public class GenerateModelHandler {
             while (innerClassFields.hasNext()) {
                 PsiField innerClassField = innerClassFields.next();
                 String methodName = String.format("get%s", Strings.capitalize(innerClassField.getName()));
-                LombokLightMethodBuilder methodBuilder = new LombokLightMethodBuilder(innerClass.getManager(), methodName)
+                FlexerLightMethodBuilder methodBuilder = new FlexerLightMethodBuilder(innerClass.getManager(), methodName)
                         .withContainingClass(innerClass)
                         .withNavigationElement(psiAnnotation)
                         .withMethodReturnType(innerClassField.getType())
@@ -108,7 +108,7 @@ public class GenerateModelHandler {
             }
             toStringBlockText.append("}\";");
 
-            LombokLightMethodBuilder toStringBuilder = new LombokLightMethodBuilder(innerClass.getManager(), "toString")
+            FlexerLightMethodBuilder toStringBuilder = new FlexerLightMethodBuilder(innerClass.getManager(), "toString")
                     .withContainingClass(innerClass)
                     .withNavigationElement(psiAnnotation)
                     .withMethodReturnType(PsiType.getJavaLangString(innerClass.getManager(), GlobalSearchScope.allScope(psiClass.getProject())))
@@ -133,7 +133,7 @@ public class GenerateModelHandler {
 
         PsiType psiTypeWithGenerics = PsiClassUtil.getTypeWithGenerics(psiModelClass);
 
-        LombokLightMethodBuilder methodBuilder = new LombokLightMethodBuilder(psiClass.getManager(), methodName)
+        FlexerLightMethodBuilder methodBuilder = new FlexerLightMethodBuilder(psiClass.getManager(), methodName)
                 .withMethodReturnType(psiTypeWithGenerics)
                 .withContainingClass(psiClass)
                 .withNavigationElement(psiAnnotation)
@@ -170,7 +170,7 @@ public class GenerateModelHandler {
         }
 
         String methodName = targetPsiClass.getName();
-        LombokLightMethodBuilder constructorBuilder = new LombokLightMethodBuilder(targetPsiClass.getManager(), methodName)
+        FlexerLightMethodBuilder constructorBuilder = new FlexerLightMethodBuilder(targetPsiClass.getManager(), methodName)
                 .withConstructor(true)
                 .withContainingClass(targetPsiClass)
                 .withNavigationElement(psiAnnotation)
@@ -179,7 +179,7 @@ public class GenerateModelHandler {
         StringBuilder blockText = new StringBuilder();
         for (PsiField ownerField : fields) {
             constructorBuilder.withParameter(
-                    new LombokLightParameter(ownerField.getName(), ownerField.getType(), constructorBuilder)
+                    new FlexerLightParameter(ownerField.getName(), ownerField.getType(), constructorBuilder)
             );
 
             blockText.append(String.format("this.%s = %s;\n", ownerField.getName(), ownerField.getName()));

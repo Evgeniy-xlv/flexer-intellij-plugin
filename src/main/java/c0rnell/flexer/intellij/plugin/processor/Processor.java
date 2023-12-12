@@ -1,6 +1,6 @@
 package c0rnell.flexer.intellij.plugin.processor;
 
-import c0rnell.flexer.intellij.plugin.problem.LombokProblem;
+import c0rnell.flexer.intellij.plugin.problem.FlexerProblem;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiAnnotation;
 import com.intellij.psi.PsiClass;
@@ -17,13 +17,13 @@ import java.util.List;
 public interface Processor {
 
     @NotNull
-    String @NotNull[] getSupportedAnnotationClasses();
+    String @NotNull [] getSupportedAnnotationClasses();
 
     @NotNull
     Class<? extends PsiElement> getSupportedClass();
 
     @NotNull
-    Collection<LombokProblem> verifyAnnotation(@NotNull PsiAnnotation psiAnnotation);
+    Collection<FlexerProblem> verifyAnnotation(@NotNull PsiAnnotation psiAnnotation);
 
     default boolean notNameHintIsEqualToSupportedAnnotation(@Nullable String nameHint) {
         return null == nameHint || (!"lombok".equals(nameHint) && Arrays.stream(getSupportedAnnotationClasses())
@@ -40,5 +40,5 @@ public interface Processor {
         return Collections.emptyList();
     }
 
-    LombokPsiElementUsage checkFieldUsage(@NotNull PsiField psiField, @NotNull PsiAnnotation psiAnnotation);
+    FlexerPsiElementUsage checkFieldUsage(@NotNull PsiField psiField, @NotNull PsiAnnotation psiAnnotation);
 }

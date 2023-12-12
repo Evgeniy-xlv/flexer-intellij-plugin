@@ -7,10 +7,8 @@ import org.jetbrains.annotations.PropertyKey;
 
 import java.util.ResourceBundle;
 
-/**
- * {@link ResourceBundle}/localization utils for the lombok plugin.
- */
-public final class LombokBundle {
+public final class FlexerBundle {
+
     /**
      * The {@link ResourceBundle} path.
      */
@@ -22,7 +20,7 @@ public final class LombokBundle {
      */
     private static final ResourceBundle BUNDLE = ResourceBundle.getBundle(BUNDLE_NAME);
 
-    private LombokBundle() {
+    private FlexerBundle() {
     }
 
     public static @Nls String message(@PropertyKey(resourceBundle = BUNDLE_NAME) String key, Object... params) {
